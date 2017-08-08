@@ -18,14 +18,14 @@ app.use(express.static(publicPath));
 io.on("connection", (socket) => {
     console.log("New user connected");
 
-    socket.emit("newMessage", {
-        from: "server@example.com",
-        text: "This is a message from Server",
-        createdAt: 321
-    });
-
-    socket.on("createMessage", (newMsg) => {
+    socket.on("createMessage", (newMsg) => { //msg to single conn
         console.log("createMessage", newMsg);
+
+        io.emit("newMessage", {  // msg to all conns
+            from: newMsg.from,
+            text: newMsg.text,
+            createdAt:new Date().getTime()
+        });
     });
 
     socket.on("disconnect", () => {
