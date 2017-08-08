@@ -13,9 +13,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^4.3.0"
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^4.3.0",
+    "heroku": "^0.2.0",
+    "heroku-cli": "^6.13.10"
   },
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "socket.io": "^2.0.3"
   }
 }
