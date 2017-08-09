@@ -18,14 +18,30 @@ app.use(express.static(publicPath));
 io.on("connection", (socket) => {
     console.log("New user connected");
 
-    socket.on("createMessage", (newMsg) => { //msg to single conn
-        console.log("createMessage", newMsg);
+    socket.emit("newMessage", { // msg only to the joiner
+        from: "Admin",
+        text: "Welcome to this chat!",
+        createdAt: new Date().getTime()
+    });
 
-        io.emit("newMessage", {  // msg to all conns
+    socket.broadcast.emit("newMessage", { // msg to all but joiner
+        from: "Admin",
+        text: "New user joined",
+        createdAt: new Date().getTime()
+    });
+
+    socket.on("createMessage", (newMsg) => {
+        console.log("createMessage", newMsg);
+        io.emit("newMessage", {  // msg to all connected clients
             from: newMsg.from,
             text: newMsg.text,
             createdAt:new Date().getTime()
         });
+        // socket.broadcast.emit("newMessage",{
+        //     from: newMsg.from,
+        //     text: newMsg.text,
+        //     createdAt:new Date().getTime()
+        // });
     });
 
     socket.on("disconnect", () => {
