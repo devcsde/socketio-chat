@@ -7,6 +7,7 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+const {generateMessage} = require("./utils/message");
 const publicPath =  path.join(__dirname, "../public");
 const port = process.env.PORT || 3000;
 let app = express();
@@ -18,25 +19,14 @@ app.use(express.static(publicPath));
 io.on("connection", (socket) => {
     console.log("New user connected");
 
-    socket.emit("newMessage", { // msg only to the joiner
-        from: "Admin",
-        text: "Welcome to this chat!",
-        createdAt: new Date().getTime()
-    });
+    socket.emit("newMessage", generateMessage("Admin", "Welcome to our chat"));// msg only to the joiner
 
-    socket.broadcast.emit("newMessage", { // msg to all but joiner
-        from: "Admin",
-        text: "New user joined",
-        createdAt: new Date().getTime()
-    });
+
+    socket.broadcast.emit("newMessage", generateMessage("Admin", "New user joined")); // msg to all but joiner
 
     socket.on("createMessage", (newMsg) => {
         console.log("createMessage", newMsg);
-        io.emit("newMessage", {  // msg to all connected clients
-            from: newMsg.from,
-            text: newMsg.text,
-            createdAt:new Date().getTime()
-        });
+        io.emit("newMessage", generateMessage(newMsg.from, newMsg.text));  // msg to all connected clients
         // socket.broadcast.emit("newMessage",{
         //     from: newMsg.from,
         //     text: newMsg.text,
