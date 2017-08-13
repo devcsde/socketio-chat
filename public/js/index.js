@@ -9,17 +9,19 @@ socket.on("disconnect", function(){
 });
 
 socket.on("newMessage", (message) => {
-    console.log("New message", message);
+    let formattedTime = moment(message.createdAt).format("H:mm");
+
     let li = $("<li></li>");
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from}, ${formattedTime}: ${message.text}`);
     $("#messages").append(li);
 });
 
 socket.on("newLocationMessage", (message) => {
+    let formattedTime = moment(message.createdAt).format("H:mm");
     let li = $("<li></li>");
     let a = $("<a target='_blank'>My current location</a>");
 
-    li.text(`${message.from}: `);
+    li.text(`${message.from}, ${formattedTime}: `);
     a.attr("href", message.url);
     li.append(a);
     $("#messages").append(li);
@@ -38,6 +40,7 @@ $("#message-form").on("submit", function (e) {
    });
 });
 
+// location & button
 var locationButton = $("#send-location");
 locationButton.on("click", function () {
    if(!navigator.geolocation) {

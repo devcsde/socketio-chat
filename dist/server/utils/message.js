@@ -1,10 +1,12 @@
 "use strict";
 
+var moment = require("moment");
+
 var generateMessage = function generateMessage(from, text) {
     return {
         from: from,
         text: text,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
@@ -12,7 +14,7 @@ var generateLocationMessage = function generateLocationMessage(from, latitude, l
     return {
         from: from,
         url: "https://www.google.com/maps?q=" + latitude + "," + longitude,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 

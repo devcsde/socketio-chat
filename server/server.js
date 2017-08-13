@@ -24,10 +24,9 @@ io.on("connection", (socket) => {
 
     socket.broadcast.emit("newMessage", generateMessage("Admin", "New user joined")); // msg to all but joiner
 
-    socket.on('createMessage', (message, callback) => {
+    socket.on('createMessage', (message) => {
         console.log('createMessage', message);
         io.emit('newMessage', generateMessage(message.from, message.text));
-        callback();
     });
 
     socket.on("createLocationMessage", (coords) => {
