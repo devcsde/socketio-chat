@@ -10,7 +10,8 @@ var express = require("express");
 var socketIO = require("socket.io");
 
 var _require = require("./utils/message"),
-    generateMessage = _require.generateMessage;
+    generateMessage = _require.generateMessage,
+    generateLocationMessage = _require.generateLocationMessage;
 
 var publicPath = path.join(__dirname, "../public");
 var port = process.env.PORT || 3000;
@@ -28,16 +29,13 @@ io.on("connection", function (socket) {
 
     socket.broadcast.emit("newMessage", generateMessage("Admin", "New user joined")); // msg to all but joiner
 
-    socket.on("createMessage", function (newMsg, callback) {
-        console.log("createMessage", newMsg);
-        io.emit("newMessage", generateMessage(newMsg.from, newMsg.text)); // msg to all connected clients
-        callback("This is from the server");
+    socket.on('createMessage', function (message) {
+        console.log('createMessage', message);
+        io.emit('newMessage', generateMessage(message.from, message.text));
+    });
 
-        // socket.broadcast.emit("newMessage",{
-        //     from: newMsg.from,
-        //     text: newMsg.text,
-        //     createdAt:new Date().getTime()
-        // });
+    socket.on("createLocationMessage", function (coords) {
+        io.emit("newLocationMessage", generateLocationMessage("Admin", coords.latitude, coords.longitude));
     });
 
     socket.on("disconnect", function () {
