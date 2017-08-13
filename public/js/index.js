@@ -1,62 +1,84 @@
-let socket = io();
+var socket = io();
 
-socket.on("connect", function(){
+function scrollToBottom () {
+    // Selectors
+    let messages = $("#messages");
+    let newMessage = messages.children("li:last-child");
+    // Heights
+    let clientHeight = messages.prop("clientHeight");
+    let scrollTop = messages.prop("scrollTop");
+    let scrollHeight = messages.prop("scrollHeight");
+    let newMessageHeight = newMessage.innerHeight();
+    let lastMessageHeight = newMessage.prev().innerHeight();
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
+socket.on("connect", function () {
     console.log("Connected to server");
 });
 
-socket.on("disconnect", function(){
+socket.on("disconnect", function () {
     console.log("Disconnected from server");
 });
 
-socket.on("newMessage", (message) => {
-    let formattedTime = moment(message.createdAt).format("H:mm");
+socket.on("newMessage", function (message) {
+    let formattedTime = moment(message.createdAt).format("h:mm a");
+    let template = $("#message-template").html();
+    let html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
 
-    let li = $("<li></li>");
-    li.text(`${message.from}, ${formattedTime}: ${message.text}`);
-    $("#messages").append(li);
+    $("#messages").append(html);
+    scrollToBottom();
 });
 
-socket.on("newLocationMessage", (message) => {
-    let formattedTime = moment(message.createdAt).format("H:mm");
-    let li = $("<li></li>");
-    let a = $("<a target='_blank'>My current location</a>");
+socket.on("newLocationMessage", function (message) {
+    let formattedTime = moment(message.createdAt).format("h:mm a");
+    let template = $("#location-message-template").html();
+    let html = Mustache.render(template, {
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+    });
 
-    li.text(`${message.from}, ${formattedTime}: `);
-    a.attr("href", message.url);
-    li.append(a);
-    $("#messages").append(li);
-    
+    $("#messages").append(html);
+    scrollToBottom();
 });
 
 $("#message-form").on("submit", function (e) {
-   e.preventDefault();
+    e.preventDefault();
 
-   let messageTextbox = $("[name=message]");
-   socket.emit("createMessage", {
-       from: "User",
+    let messageTextbox = $("[name=message]");
+
+    socket.emit("createMessage", {
+        from: "User",
         text: messageTextbox.val()
     }, function () {
-       messageTextbox.val("");
-   });
+        messageTextbox.val("")
+    });
 });
 
-// location & button
-var locationButton = $("#send-location");
+let locationButton = $("#send-location");
 locationButton.on("click", function () {
-   if(!navigator.geolocation) {
-       return alert("Geolocation not supported by your browser.")
-   }
+    if (!navigator.geolocation) {
+        return alert("Geolocation nicht unterstuetzt.");
+    }
 
-locationButton.attr("disabled", "disabled").text("Sending location...");
+    locationButton.attr("disabled", "disabled").text("Ermittle Position...");
 
-   navigator.geolocation.getCurrentPosition(function (position) {
-       locationButton.removeAttr("disabled").text("Send location");
-       socket.emit("createLocationMessage", {
-           latitude: position.coords.latitude,
-           longitude: position.coords.longitude
-       });
-   }, function () {
-       locationButton.removeAttr("disabled").text("Send location");
-       alert("Unable to fetch location.")
-   });
+    navigator.geolocation.getCurrentPosition(function (position) {
+        locationButton.removeAttr("disabled").text("Sende GPS");
+        socket.emit("createLocationMessage", {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        });
+    }, function () {
+        locationButton.removeAttr("disabled").text("Sende GPS");
+        alert("Keine Verbindung zum GPS.");
+    });
 });

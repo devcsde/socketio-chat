@@ -1,9 +1,5 @@
 "use strict";
 
-/**
- * Created by csche on 03.08.2017.
- */
-
 var path = require("path");
 var http = require("http");
 var express = require("express");
@@ -24,18 +20,18 @@ app.use(express.static(publicPath));
 io.on("connection", function (socket) {
     console.log("New user connected");
 
-    socket.emit("newMessage", generateMessage("Admin", "Welcome to our chat")); // msg only to the joiner
+    socket.emit("newMessage", generateMessage("Fr'amily", "Willkommen im Chat"));
 
+    socket.broadcast.emit("newMessage", generateMessage("Fr'amily", "Neuer Benutzer"));
 
-    socket.broadcast.emit("newMessage", generateMessage("Admin", "New user joined")); // msg to all but joiner
-
-    socket.on('createMessage', function (message) {
-        console.log('createMessage', message);
-        io.emit('newMessage', generateMessage(message.from, message.text));
+    socket.on("createMessage", function (message, callback) {
+        console.log("createMessage", message);
+        io.emit("newMessage", generateMessage(message.from, message.text));
+        callback();
     });
 
     socket.on("createLocationMessage", function (coords) {
-        io.emit("newLocationMessage", generateLocationMessage("Admin", coords.latitude, coords.longitude));
+        io.emit("newLocationMessage", generateLocationMessage("User", coords.latitude, coords.longitude));
     });
 
     socket.on("disconnect", function () {
@@ -44,6 +40,6 @@ io.on("connection", function (socket) {
 });
 
 server.listen(port, function () {
-    console.log("Started up at port " + port);
+    console.log("Server is up on " + port);
 });
 //# sourceMappingURL=server.js.map

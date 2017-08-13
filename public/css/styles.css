@@ -168,6 +168,10 @@ button:disabled {
     color: #999
 }
 
+.message__body {
+    background-color: #ffffff;
+}
+
 @media (max-width: 600px) {
     * {
         font-size: 1rem
