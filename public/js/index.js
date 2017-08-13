@@ -1,4 +1,4 @@
-var socket = io();
+const socket = io();
 
 function scrollToBottom () {
     // Selectors
@@ -25,7 +25,7 @@ socket.on("disconnect", function () {
 });
 
 socket.on("newMessage", function (message) {
-    let formattedTime = moment(message.createdAt).format("h:mm a");
+    let formattedTime = moment(message.createdAt).format("H:mm");
     let template = $("#message-template").html();
     let html = Mustache.render(template, {
         text: message.text,
@@ -38,7 +38,7 @@ socket.on("newMessage", function (message) {
 });
 
 socket.on("newLocationMessage", function (message) {
-    let formattedTime = moment(message.createdAt).format("h:mm a");
+    let formattedTime = moment(message.createdAt).format("H:mm");
     let template = $("#location-message-template").html();
     let html = Mustache.render(template, {
         from: message.from,
