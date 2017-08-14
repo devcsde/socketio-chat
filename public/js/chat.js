@@ -24,7 +24,7 @@ socket.on("connect", function () {
             alert(err);
             window.location.href = "/";
         } else {
-            console.log("no error")
+            return "no error";
         }
     })
 });
