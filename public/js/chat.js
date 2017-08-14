@@ -43,7 +43,6 @@ socket.on("updateUserList", (users) => {
     $("#users").html(ol);
 });
 
-
 socket.on("newMessage", function (message) {
     let formattedTime = moment(message.createdAt).format("H:mm");
     let template = $("#message-template").html();
@@ -76,7 +75,6 @@ $("#message-form").on("submit", function (e) {
     let messageTextbox = $("[name=message]");
 
     socket.emit("createMessage", {
-        from: "User",
         text: messageTextbox.val()
     }, function () {
         messageTextbox.val("")
