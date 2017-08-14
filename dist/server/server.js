@@ -26,19 +26,16 @@ app.use(express.static(publicPath));
 
 io.on("connection", function (socket) {
     console.log("New user connected");
+    io.emit("updateRoomsList", users.getRoomList());
 
     socket.on("join", function (userData, callback) {
         if (!isRealString(userData.name) || !isRealString(userData.room)) {
             return callback("Name und Raum werden benoetigt.");
         }
-
         socket.join(userData.room);
-
         users.removeUser(socket.id);
         users.addUser(socket.id, userData.name, userData.room);
-
         io.to(userData.room).emit("updateUserList", users.getUserList(userData.room));
-
         socket.emit("newMessage", generateMessage("Fr'amily", "Willkommen im Chat"));
         socket.broadcast.to(userData.room).emit("newMessage", generateMessage("Fr'amily", userData.name + " ist beigetreten."));
 

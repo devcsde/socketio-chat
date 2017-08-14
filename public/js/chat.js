@@ -17,7 +17,7 @@ function scrollToBottom () {
 }
 
 socket.on("connect", function () {
-    let userData = $.deparam(window.location.search);
+    let userData = $.deparam(window.location.search); //deparam library
 
     socket.emit("join", userData, (err) => {
         if (err) {

@@ -49,6 +49,18 @@ var Users = function () {
             });
             return namesArray;
         }
+    }, {
+        key: "getRoomList",
+        value: function getRoomList() {
+            var rooms = this.users.filter(function (user) {
+                return user.room;
+            });
+            var roomsArray = rooms.map(function (user) {
+                return user.room;
+            });
+            var resArray = Array.from(new Set(roomsArray));
+            return resArray;
+        }
     }]);
 
     return Users;

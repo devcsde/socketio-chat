@@ -77,5 +77,11 @@ describe("Users", function () {
 
         expect(userList).toEqual(["Jen"]);
     });
+
+    it("should return room names", function () {
+        var userList = users.getRoomList();
+
+        expect(userList).toEqual(["Node Course", "React Course"]);
+    });
 });
 //# sourceMappingURL=users.test.js.map

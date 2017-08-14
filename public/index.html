@@ -8,7 +8,7 @@
 </head>
 <body class="centered-form">
 <div class="centered-form__form">
-    <form action="/chat.html">
+    <form id="join-form" action="/chat.html">
         <div class="form-field">
             <h3>Chat betreten</h3>
         </div>
@@ -17,13 +17,19 @@
             <input type="text" name="name" required autofocus/>
         </div>
         <div class="form-field">
-            <label>Chatroom Name</label>
-            <input type="text" name="room"/>
+            <label >Chatroom Name</label>
+            <input type="text" name="room" id="iroom"/>
         </div>
         <div class="form-field">
             <button>Join</button>
         </div>
     </form>
+    <div id="rooms">
+    </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/libs/mustache.js"></script>
+<script src="/js/libs/jquery-3.2.1.min.js"></script>
+<script src="/js/index.js"></script>
 </body>
 </html>

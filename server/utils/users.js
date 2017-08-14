@@ -28,8 +28,14 @@ class Users {
         let namesArray = users.map((user) => user.name);
         return namesArray;
     }
-}
 
+    getRoomList() {
+        let rooms = this.users.filter((user) => user.room);
+        let roomsArray = rooms.map((user) => user.room);
+        let resArray = Array.from(new Set(roomsArray));
+        return resArray;
+    }
+}
 
 module.exports = {Users};
 
